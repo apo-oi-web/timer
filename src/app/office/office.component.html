@@ -1,8 +1,0 @@
-<h1>APO Office Usage</h1>
-<p>How long until it is okay to enter the APO office?</p>
-<div *ngIf="isClear()" class="available">
-  <p> The office is good to use! </p>
-</div>
-<div *ngIf="!isClear()" class="unavailable">
-  <p> Please wait {{ remainingTime() }} before entering the APO Office. </p>
-</div>

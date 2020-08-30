@@ -12,7 +12,9 @@ export class Countdown {
   }
 
   toString(): string {
-    return `${this.hours ? this.hours + ':' : ''}${("00" + this.minutes).slice(-2)}:${("00" + this.seconds).slice(-2)}`;
+    let minString: string = this.minutes !== null ? ("00" + this.minutes).slice(-2) : "--";
+    let secString: string = this.seconds !== null ? ("00" + this.seconds).slice(-2) : "--";
+    return `${this.hours ? this.hours + ':' : ''}${minString}:${secString}`;
   }
 
   asText(): string {

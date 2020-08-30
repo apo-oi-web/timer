@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpService } from 'src/app/http.service';
 import { Observable, interval } from 'rxjs';
 import { Countdown } from 'src/app/model/Countdown.model';
@@ -8,12 +8,13 @@ import { Countdown } from 'src/app/model/Countdown.model';
   templateUrl: './office.component.html',
   styleUrls: ['./office.component.scss']
 })
-export class OfficeComponent implements OnInit {
+export class OfficeComponent implements OnInit, OnDestroy {
 
   available = false;
   lastAccessDate: Date = null;
   countdown: Countdown = new Countdown();
-  intervalID: number;
+  timerIntervalID: number;
+  refreshIntervalID: number;
   status: string = "loading";
 
   constructor(private http: HttpService) { }
@@ -21,7 +22,12 @@ export class OfficeComponent implements OnInit {
   ngOnInit(): void {
     this.available = false;
     this.updateTime();
-    this.intervalID = setInterval(() => this.countdown = this.remainingTime(), 1000);
+    // Periodically refresh the timestamp to count down from
+    this.refreshIntervalID = setInterval(() => this.updateTime(), 30000);
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.refreshIntervalID);
   }
 
   isClear(): boolean {
@@ -29,23 +35,23 @@ export class OfficeComponent implements OnInit {
       return false;
     }
     let now = new Date();
-    console.log(`Current time: ${now.toString()} or in ms: ${now.getTime()}`);
-    console.log(
-      `Milliseconds elapsed: ${
-        now.getTime() - this.lastAccessDate.getTime()
-      }\nWhich is ${
-        Math.floor((now.getTime() - this.lastAccessDate.getTime()) / (60 * 60 * 1000))
-      } hours, ${
-        Math.floor((now.getTime() - this.lastAccessDate.getTime()) / (60 * 1000) % 60)
-      } minutes, and ${
-        Math.floor((now.getTime() - this.lastAccessDate.getTime()) / (1000) % 60)
-      } seconds`);
+    // console.log(`Current time: ${now.toString()} or in ms: ${now.getTime()}`);
+    // console.log(
+    //   `Milliseconds elapsed: ${
+    //     now.getTime() - this.lastAccessDate.getTime()
+    //   }\nWhich is ${
+    //     Math.floor((now.getTime() - this.lastAccessDate.getTime()) / (60 * 60 * 1000))
+    //   } hours, ${
+    //     Math.floor((now.getTime() - this.lastAccessDate.getTime()) / (60 * 1000) % 60)
+    //   } minutes, and ${
+    //     Math.floor((now.getTime() - this.lastAccessDate.getTime()) / (1000) % 60)
+    //   } seconds`);
     return now.getTime() - this.lastAccessDate.getTime() > 15 * 60 * 1000;
   }
 
-  remainingTime(): Countdown {
+  getRemainingTime(): Countdown {
     if (!this.lastAccessDate) {
-      return new Countdown(0, 0);
+      return new Countdown();
     }
     let now = new Date();
     let min = 15 - Math.floor((now.getTime() - this.lastAccessDate.getTime()) / (60 * 1000) % 60);
@@ -61,10 +67,10 @@ export class OfficeComponent implements OnInit {
     this.status = 'loading';
     this.http.getOfficeAvailability().subscribe({
       next: ( response: {entry: {content: {$t: String} } } ) => {
-        console.log(`Time: ${response.entry.content.$t}`);
-        let time = response.entry.content.$t.split('-');
-        console.log(`Split time: ${JSON.stringify(time)}`);
-        let date = new Date(
+        // console.log(`Time: ${response.entry.content.$t}`);
+        const time = response.entry.content.$t.split('-');
+        // console.log(`Split time: ${JSON.stringify(time)}`);
+        const date = new Date(
           parseInt(time[0], 10),  // Year
           parseInt(time[1], 10) - 1,  // Month
           parseInt(time[2], 10),  // Day
@@ -75,6 +81,17 @@ export class OfficeComponent implements OnInit {
         console.log(`Date string: ${date.toString()}`);
         this.lastAccessDate = date;
         this.status = 'success';
+
+        // If the office is newly unavailable
+        if (!this.timerIntervalID && !this.isClear()) {
+          this.timerIntervalID = setInterval(() => this.countdown = this.getRemainingTime(), 1000);
+        }
+
+        // If the office is newly available
+        if (this.timerIntervalID && this.isClear() && this.timerIntervalID) {
+          clearInterval(this.timerIntervalID);
+          this.timerIntervalID = null;
+        }
       },
       error: err => {
         console.error(`Error: ${err.message}`);

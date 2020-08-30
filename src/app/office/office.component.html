@@ -1,5 +1,10 @@
 <h1>APO Office Usage</h1>
-<p>How long until it is okay to enter the APO office?</p>
+<p>
+  How long until it is okay to enter the APO office?
+  <button mat-mini-fab color="primary" class="mat-elevation-z0" (click)="updateTime()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</p>
 <div *ngIf="status === 'loading'">
   <div>
     <p>Retrieving Google Sheet Data</p>

@@ -1,0 +1,26 @@
+#status {
+  height: 60vh;
+  font-size: 22px;
+}
+
+.available {
+  background-color: lightgreen;
+}
+
+#check {
+  font-size: 30em;
+}
+
+.unavailable {
+  background-color: #ff6666;
+}
+
+.countdown-pad {
+  padding-top: 20vmin;
+}
+
+#countdown {
+  height: 50vmin;
+  font-size: 30vmin;
+  margin: auto;
+}

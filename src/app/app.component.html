@@ -1,7 +1,9 @@
 <mat-toolbar color="primary">
-  <a mat-flat-button color="primary" href="https://users.wpi.edu/~apo/" target="_blank"> APO Omicron Iota </a>
+  <!-- <a mat-flat-button color="primary" href="https://users.wpi.edu/~apo/" target="_blank"> APO Omicron Iota </a> -->
+  <button mat-flat-button color="primary" [routerLink]="['/about']">About</button>
+  <button mat-flat-button color="primary" [routerLink]="['/']">Office Status</button>
+  <a mat-flat-button color="primary" href="https://forms.gle/8cywahopHKMV3CbG6" target="_blank">Sign Out Form</a>
 </mat-toolbar>
 <div class="padded-box">
-  <!-- <router-outlet></router-outlet> -->
-  <apo-office></apo-office>
+  <router-outlet></router-outlet>
 </div>

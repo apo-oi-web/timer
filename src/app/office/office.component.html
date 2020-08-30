@@ -1,8 +1,28 @@
 <h1>APO Office Usage</h1>
 <p>How long until it is okay to enter the APO office?</p>
-<div *ngIf="isClear()" class="available">
-  <p> The office is good to use! </p>
+<div *ngIf="status === 'loading'">
+  <div>
+    <p>Retrieving Google Sheet Data</p>
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
 </div>
-<div *ngIf="!isClear()" class="unavailable">
-  <p> Please wait {{ remainingTime() }} before entering the APO Office. </p>
+<div *ngIf="status === 'fail'">
+  <p>Error Retrieving Last Timestamp.</p>
+  <button mat-flat-button color="primary" (click)="updateTime()">Retry</button>
+</div>
+<div *ngIf="status === 'success'" id="status" [class]="isClear() ? 'available' : 'unavailable'">
+  <div *ngIf="isClear()">
+    <p>
+      <mat-icon>check_circle_outline</mat-icon>
+      The office is good to use! </p>
+  </div>
+  <div *ngIf="!isClear()">
+    <p>
+      <mat-icon>close</mat-icon>
+      Please wait {{ countdown.asText() }} before entering the office.
+    </p>
+    <div class="countdown-pad">
+      <p id="countdown"> {{ countdown.toString() }} </p>
+    </div>
+  </div>
 </div>

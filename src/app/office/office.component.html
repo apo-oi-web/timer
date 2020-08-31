@@ -5,6 +5,13 @@
     <mat-icon>refresh</mat-icon>
   </button>
 </p>
+<p>
+  <mat-icon>warning</mat-icon>
+  Last Usage Timestamp: {{lastAccessDate.toString()}}
+</p>
+<!-- <p>
+  Sometimes the color displayed below is unreliable. Please double-check with the time stamp.
+</p> -->
 <div *ngIf="status === 'loading'">
   <div>
     <p>Retrieving Google Sheet Data</p>

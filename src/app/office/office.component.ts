@@ -70,13 +70,14 @@ export class OfficeComponent implements OnInit, OnDestroy {
         // console.log(`Time: ${response.entry.content.$t}`);
         const time = response.entry.content.$t.split('-');
         // console.log(`Split time: ${JSON.stringify(time)}`);
-        const date = new Date(
-          parseInt(time[0], 10),  // Year
-          parseInt(time[1], 10) - 1,  // Month
-          parseInt(time[2], 10),  // Day
-          parseInt(time[3], 10),  // Hour
-          parseInt(time[4], 10),  // Minute
-          parseInt(time[5], 10),  // Second
+        const date = new Date(`${
+          parseInt(time[0], 10)}-${  // Year
+          parseInt(time[1], 10) - 1}-${  // Month
+          parseInt(time[2], 10)} ${  // Day
+          parseInt(time[3], 10)}:${  // Hour
+          parseInt(time[4], 10)}:${  // Minute
+          parseInt(time[5], 10)} GMT-04:00`  // Second
+          // Eastern Time
         );
         console.log(`Date string: ${date.toString()}`);
         this.lastAccessDate = date;

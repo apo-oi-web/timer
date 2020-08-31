@@ -71,9 +71,9 @@ export class OfficeComponent implements OnInit, OnDestroy {
         const time = response.entry.content.$t.split('-');
         // console.log(`Split time: ${JSON.stringify(time)}`);
         const date = new Date(`${
-          parseInt(time[0], 10)}-${  // Year
-          parseInt(time[1], 10) - 1}-${  // Month
+          MONTHS[parseInt(time[1], 10) - 1]}${  // Month
           parseInt(time[2], 10)} ${  // Day
+          parseInt(time[0], 10)} ${  // Year
           parseInt(time[3], 10)}:${  // Hour
           parseInt(time[4], 10)}:${  // Minute
           parseInt(time[5], 10)} GMT-04:00`  // Second
@@ -102,3 +102,18 @@ export class OfficeComponent implements OnInit, OnDestroy {
   }
 
 }
+
+const MONTHS: string[] = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+]
